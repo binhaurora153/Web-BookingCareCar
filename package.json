@@ -1,7 +1,7 @@
 {
   "name": "nodejs",
   "version": "1.0.0",
-  "description": "backend nodejs hoiDanIT",
+  "description": "backend nodejs ThienBinh",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,9 +11,9 @@
     "fullstack",
     "nodejs",
     "express",
-    "hoiDanIT"
+    "ThienBinh"
   ],
-  "author": "Eric HoiDanIT",
+  "author": "ThienBinh",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
