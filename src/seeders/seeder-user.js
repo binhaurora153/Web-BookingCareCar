@@ -23,6 +23,7 @@ module.exports = {
      * Add commands to revert seed here.
      *
      * Example:
+     * // PORT=8080 // NODE_ENV =development
      * await queryInterface.bulkDelete('People', null, {});
      */
   },
