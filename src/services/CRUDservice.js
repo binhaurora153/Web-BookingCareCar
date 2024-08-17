@@ -35,6 +35,7 @@ let hashUserPassword = (password) => {
     }
   });
 };
+
 let getAllUser = () => {
   return new Promise(async (resolve, reject) => {
     try {
