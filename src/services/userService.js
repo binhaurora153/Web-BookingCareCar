@@ -182,7 +182,7 @@ let deleteUser = (userId) => {
 let updateUserData = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      if (!data.id) {
+      if (!data.id || !data.roleId || !data.positionId || !data.gender) {
         resolve({
           errCode: 2,
           errMessage: "Missing input id",
@@ -194,9 +194,15 @@ let updateUserData = (data) => {
       });
 
       if (user) {
+        user.email = data.email;
         user.firstName = data.firstName;
         user.lastName = data.lastName;
         user.address = data.address;
+        user.roleId = data.roleId;
+        user.positionId = data.positionId;
+        user.gender = data.gender;
+        user.phonenumber = data.phonenumber;
+
         await user.save();
         //   firstName: data.firstName,
         //   lastName: data.lastName,
