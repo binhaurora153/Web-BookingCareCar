@@ -1,6 +1,4 @@
-import { where } from "sequelize";
 import db from "../models/index";
-import { raw } from "body-parser";
 
 let getTopDoctorHome = (limitInput) => {
   return new Promise(async (resolve, reject) => {
