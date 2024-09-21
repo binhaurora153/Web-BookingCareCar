@@ -1,4 +1,3 @@
-import { where } from "sequelize";
 import db from "../models/index";
 require("dotenv").config();
 import _ from "lodash";
@@ -173,22 +172,11 @@ let bulkCreateSchedule = (data) => {
           attributes: ["doctorId", "date", "timeType", "maxNumber"],
           raw: true,
         });
-        //convert date
-        if (existing && existing.lenght > 0) {
-          existing = existing.map((item) => {
-            item.date = new Date(item.date).getTime();
-            return item;
-          });
-        }
 
-        //compare different
-        // let toCreate = _.differenceBy(schedule, existing, (a, b) => {
-        //   return a.timeType === b.timeType && a.date === b.date;
-        // });
-        let toCreate = _.differenceBy(schedule, existing, "timeType", "date");
-        // let toCreate = _.differenceBy(schedule, existing, (a, b) => {
-        //   return a.timeType === b.timeType && a.date === b.date;
-        // });
+        // compare different
+        let toCreate = _.differenceWith(schedule, existing, (a, b) => {
+          return a.timeType === b.timeType && +a.date === +b.date;
+        });
 
         //create data
         if (toCreate && toCreate.length > 0) {
