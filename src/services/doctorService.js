@@ -205,8 +205,19 @@ let getScheduleByDate = (doctorId, date) => {
       } else {
         let dataSchedule = await db.Schedule.findAll({
           where: { doctorId: doctorId, date: date },
+          include: [
+            {
+              model: db.Allcode,
+              as: "timeTypeData",
+              attributes: ["valueEn", "valueVi"],
+            },
+          ],
+          raw: true,
+          nest: true,
         });
+
         if (!dataSchedule) dataSchedule = [];
+
         resolve({
           errCode: 0,
           data: dataSchedule,
