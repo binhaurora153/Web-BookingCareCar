@@ -63,6 +63,11 @@ let initWebRoutes = (app) => {
     patientController.postBookAppoinment
   );
 
+  router.post(
+    "/api/verify-book-appointment",
+    patientController.postVerifyBookAppoinment
+  );
+
   return app.use("/", router);
 };
 
