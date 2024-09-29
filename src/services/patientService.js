@@ -1,5 +1,6 @@
+import { times } from "lodash";
 import db from "../models/index";
-
+import emailService from "./emailService";
 let postBookAppoinment = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -9,6 +10,13 @@ let postBookAppoinment = (data) => {
           errMessage: "Missing ",
         });
       } else {
+        await emailService.sendSimpleEmail({
+          reciverEmail: data.email,
+          patientName: "Phước Quang",
+          time: "8.00 - 9.00 - Chủ nhật",
+          doctorName: "Thiện Bình",
+          redirectLink: "https://www.facebook.com/",
+        });
         let user = await db.User.findOrCreate({
           where: { email: data.email },
           defaults: {
