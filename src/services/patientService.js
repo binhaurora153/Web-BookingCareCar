@@ -12,9 +12,10 @@ let postBookAppoinment = (data) => {
       } else {
         await emailService.sendSimpleEmail({
           reciverEmail: data.email,
-          patientName: "Phước Quang",
-          time: "8.00 - 9.00 - Chủ nhật",
-          doctorName: "Thiện Bình",
+          patientName: data.fullName,
+          time: data.timeString,
+          doctorName: data.doctorName,
+          language: data.language,
           redirectLink: "https://www.facebook.com/",
         });
         let user = await db.User.findOrCreate({
