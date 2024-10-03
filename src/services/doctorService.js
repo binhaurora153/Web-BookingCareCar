@@ -58,6 +58,32 @@ let getAllDoctors = () => {
   });
 };
 
+// let checkRequiredFields = (inputData) => {
+//   let arrFields = [
+//     "doctorId",
+//     "contentHTML",
+//     "contentMarkdown",
+//     "action",
+//     "selectedPrice",
+//     "selectedPayment",
+//     "selectedProvince",
+//     "nameClinic",
+//     "addressClinic",
+//     "specialtyId",
+//   ];
+//   let isValid = true;
+//   let element = "";
+
+//   for (let i = 0; i < arrFields.lenght; i++) {
+//     if (!inputData[arrFields[i]]) {
+//       isValid = false;
+//       element = arrFields[i];
+//       break;
+//     }
+//   }
+//   return { isValid: isValid, element: element };
+// };
+
 let saveDetailInforDoctor = (inputData) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -70,11 +96,12 @@ let saveDetailInforDoctor = (inputData) => {
         !inputData.selectedPayment ||
         !inputData.selectedProvince ||
         !inputData.nameClinic ||
-        !inputData.addressClinic
+        !inputData.addressClinic ||
+        !inputData.specialtyId
       ) {
         resolve({
           errCode: 1,
-          errMessage: "ERROR Missing",
+          errMessage: `ERROR Missing`,
         });
       } else {
         //upsert to the markdown
@@ -112,7 +139,8 @@ let saveDetailInforDoctor = (inputData) => {
           doctorInfor.addressClinic = inputData.addressClinic;
           doctorInfor.nameClinic = inputData.nameClinic;
           doctorInfor.note = inputData.note;
-
+          doctorInfor.specialtyId = inputData.specialtyId;
+          doctorInfor.clinicIdId = inputData.clinicId;
           await doctorInfor.save();
         } else {
           //create
@@ -124,6 +152,8 @@ let saveDetailInforDoctor = (inputData) => {
             addressClinic: inputData.addressClinic,
             nameClinic: inputData.nameClinic,
             note: inputData.note,
+            specialtyId: inputData.specialtyId,
+            clinicId: inputData.clinicId,
           });
         }
         resolve({
