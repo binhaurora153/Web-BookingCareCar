@@ -1,5 +1,6 @@
 const { name } = require("ejs");
 const db = require("../models");
+const { where } = require("sequelize");
 
 let createSpecialty = (data) => {
   return new Promise(async (resolve, reject) => {
@@ -52,7 +53,52 @@ let getAllSpecialty = () => {
     }
   });
 };
+
+let getDetailSpecialtyById = (inputId, location) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!inputId || !location) {
+        resolve({
+          errCode: 1,
+          errMessage: "Missing input",
+        });
+      } else {
+        let data = await db.Specialty.findOne({
+          where: { id: inputId },
+          atrributes: ["descriptionHTML", "descriptionMarkdown"],
+        });
+
+        if (data) {
+          ///
+          let doctorSpecialty = [];
+          if (location === "ALL") {
+            doctorSpecialty = await db.Doctor_Infor.findAll({
+              where: { specialtyId: inputId },
+              atrributes: ["doctorId", "provinceId"],
+            });
+          } else {
+            //find by location
+            doctorSpecialty = await db.Doctor_Infor.findAll({
+              where: { specialtyId: inputId, provinceId: location },
+              atrributes: ["doctorId", "provinceId"],
+            });
+          }
+
+          data.doctorSpecialty = doctorSpecialty;
+        } else data = [];
+        resolve({
+          errCode: 0,
+          errMessage: "OK",
+          data,
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
 module.exports = {
   createSpecialty: createSpecialty,
   getAllSpecialty: getAllSpecialty,
+  getDetailSpecialtyById: getDetailSpecialtyById,
 };
