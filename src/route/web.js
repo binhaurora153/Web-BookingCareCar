@@ -70,6 +70,11 @@ let initWebRoutes = (app) => {
     patientController.postVerifyBookAppoinment
   );
 
+  router.get(
+    "/api/get-list-patient-for-doctor",
+    doctorController.getListPatientForDoctor
+  );
+
   router.post("/api/create-new-specialty", specialtyController.createSpecialty);
 
   router.get("/api/get-specialty", specialtyController.getAllSpecialty);

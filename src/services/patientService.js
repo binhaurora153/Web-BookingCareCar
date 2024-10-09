@@ -18,7 +18,10 @@ let postBookAppoinment = (data) => {
         !data.doctorId ||
         !data.timeType ||
         !data.date ||
-        !data.fullName
+        !data.fullName ||
+        !data.selectedGender ||
+        !data.address ||
+        !data.phoneNumber
       ) {
         resolve({
           errCode: 1,
@@ -34,14 +37,20 @@ let postBookAppoinment = (data) => {
           language: data.language,
           redirectLink: buildUrlEmail(data.doctorId, token),
         });
+        //upsert patient
         let user = await db.User.findOrCreate({
           where: { email: data.email },
           defaults: {
             email: data.email,
             roleId: "R3",
+            address: data.address,
+            gender: data.selectedGender,
+            phonenumber: data.phoneNumber,
+            firstName: data.fullName,
           },
         });
 
+        //create a booking record
         if (user && user[0]) {
           await db.Booking.findOrCreate({
             where: { patientId: user[0].id },
