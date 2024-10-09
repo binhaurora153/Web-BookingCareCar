@@ -3,6 +3,7 @@ require("dotenv").config();
 import _ from "lodash";
 const MAX_NUMBER_SCHEDULE = process.env.MAX_NUMBER_SCHEDULE;
 
+import emailService from "../services/emailService";
 let getTopDoctorHome = (limitInput) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -479,6 +480,12 @@ let getListPatientForDoctor = (doctorId, date) => {
                 },
               ],
             },
+
+            {
+              model: db.Allcode,
+              as: "timeTypeDataPatient",
+              attributes: ["valueEn", "valueVi"],
+            },
           ],
           raw: false,
           nest: true,
@@ -487,6 +494,43 @@ let getListPatientForDoctor = (doctorId, date) => {
         resolve({
           errCode: 0,
           data: data,
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+let sendRemedy = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!data.email || !data.doctorId || !data.patientId || !data.timeType) {
+        resolve({
+          errCode: 1,
+          errMessage: "Missing ",
+        });
+      } else {
+        //update patient status
+
+        let appointment = await db.Booking.findOne({
+          where: {
+            doctorId: data.doctorId,
+            patientId: data.patientId,
+            timeType: data.timeType,
+            statusId: "S2",
+          },
+          raw: false,
+        });
+        if (appointment) {
+          appointment.statusId = "S3";
+          await appointment.save();
+        }
+        //send email remedy
+        await emailService.sendAttachment(data);
+        resolve({
+          errCode: 0,
+          errMessage: "OK",
         });
       }
     } catch (e) {
@@ -505,4 +549,5 @@ module.exports = {
   getExtraInforDoctorById: getExtraInforDoctorById,
   getProfileDoctorById: getProfileDoctorById,
   getListPatientForDoctor: getListPatientForDoctor,
+  sendRemedy: sendRemedy,
 };

@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 // const nodemailer = require("nodemailer");
 
 let sendSimpleEmail = async (dataSend) => {
-  const transporter = nodemailer.createTransport({
+  let transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
     secure: false, // true for port 465, false for other ports
@@ -12,7 +12,7 @@ let sendSimpleEmail = async (dataSend) => {
       pass: process.env.EMAIL_APP_PASSWORD,
     },
   });
-  const info = await transporter.sendMail({
+  let info = await transporter.sendMail({
     from: '"Master, Doctor Thiện Bình" <lbnh131@.gmail.com>', // sender address
     to: dataSend.reciverEmail, // list of receivers
     subject: "Thông tin đặt lịch khám bệnh", // Subject line
@@ -59,6 +59,55 @@ let getBodyHTML = (dataSend) => {
   }
   return result;
 };
+
+let getBodyHTMLEmailRemedy = (dataSend) => {
+  let result = "";
+  if (dataSend.language === "vi") {
+    result = `
+    <h3>Xin chào ${dataSend.patientName}!</h3>
+    <p>Bạn đã đặt lịch khám thành công tại trang Bookingcare của chúng tôi.</p>
+    <p><strong>Thông tin đơn thuốc được gửi trong file đính kèm</strong></p>
+    <p>Xin chân thành cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.</p>
+    `;
+  }
+
+  if (dataSend.language === "en") {
+    result = `
+    <h3>Hello ${dataSend.patientName}!</h3>
+    <p>You have successfully booked an appointment at our Bookingcare site.</p>
+    <p><strong>Prescription information is sent in the attached file</strong></p>
+    <p>Thank you very much for using our service.</p>
+    `;
+  }
+  return result;
+};
+
+let sendAttachment = async (dataSend) => {
+  let transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false, // true for port 465, false for other ports
+    auth: {
+      user: process.env.EMAIL_APP,
+      pass: process.env.EMAIL_APP_PASSWORD,
+    },
+  });
+  let info = await transporter.sendMail({
+    from: '"Master, Doctor Thiện Bình" <lbnh131@.gmail.com>', // sender address
+    to: dataSend.email, // list of receivers
+    subject: "Kết quả đặt lịch khám bệnh", // Subject line
+    html: getBodyHTMLEmailRemedy(dataSend),
+    attachments: [
+      {
+        // encoded string as an attachment
+        filename: `Remedy_${dataSend.patientName}.png`,
+        content: dataSend.imgBase64.split("base64,")[1],
+        encoding: "base64",
+      },
+    ],
+  });
+};
 module.exports = {
   sendSimpleEmail: sendSimpleEmail,
+  sendAttachment: sendAttachment,
 };
